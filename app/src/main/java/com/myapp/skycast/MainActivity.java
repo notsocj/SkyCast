@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -94,12 +95,63 @@ public class MainActivity extends AppCompatActivity {
             // extracts the weather object from the "weather" array
             JSONArray weatherArray = jsonObject.getJSONArray("weather");
             JSONObject weather = weatherArray.getJSONObject(0);
+            String mainCategory = weather.getString("main");
             String description = weather.getString("description");
 
             // Display the extracted weather information in the TextView
             weatherResult.setText("Temperature: " + temperature + "°C\n" + "Description: " + description);
+
+            //sets the icon depends on the main and description
+            setWeatherIcon( mainCategory,description );
         } catch (JSONException e) {
-            e.printStackTrace(); //prints the error if JSON Parsing Fails
+            e.printStackTrace();
+            weatherResult.setText("Error Getting Weather Data");//prints the error if JSON Parsing Fails
+        }
+
+
+    }
+
+    private void setWeatherIcon(String main, String description){
+        ImageView showicon = findViewById(R.id.weathericon);
+        description = description.toLowerCase();
+
+        switch (main.toLowerCase()){
+            case "rain" :
+                showicon.setImageResource(R.drawable.icon_rain);
+                break;
+            case "thunderstorm" :
+                showicon.setImageResource(R.drawable.icon_thunderstorm);
+                break;
+            case "drizzle" :
+                showicon.setImageResource(R.drawable.icon_showerrain);
+                break;
+            case "snow" :
+                showicon.setImageResource(R.drawable.icon_snow);
+                break;
+            case "atmosphere" :
+                showicon.setImageResource(R.drawable.icon_mist);
+                break;
+            case "clear" :
+                showicon.setImageResource(R.drawable.icon_clearsky);
+                break;
+            case "clouds" :
+                if (description.contains("few")){
+                    showicon.setImageResource(R.drawable.icon_fewclouds);
+                }
+                else if (description.contains("scattered")){
+                    showicon.setImageResource(R.drawable.icon_scatteredclouds);
+                }
+                else if (description.contains("broken")){
+                    showicon.setImageResource(R.drawable.icon_brokenclouds);
+                }
+                else {
+                    showicon.setImageResource(R.drawable.icon_brokenclouds);
+                }
+                break;
+            default:
+                showicon.setImageResource(R.drawable.icon_default);
+                break;
         }
     }
+
 }
